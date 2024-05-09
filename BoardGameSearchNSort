@@ -1,0 +1,106 @@
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Main {
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to the Board Game Collection Manager!\n");
+
+        // Creating a collection of board games
+        ArrayList<String> boardGames = new ArrayList<>();
+        // Loading board games from CSV file
+        loadFromCSV(boardGames, "board_games.csv");
+
+        while (true) {
+            displayMenu();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline character
+
+            switch (choice) {
+                case 1:
+                    sortCollection(boardGames);
+                    break;
+                case 2:
+                    searchGame(boardGames);
+                    break;
+                case 3:
+                    addGame(boardGames);
+                    break;
+                case 4:
+                    saveToCSV(boardGames, "board_games.csv");
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void displayMenu() {
+        System.out.println("\nMenu:");
+        System.out.println("1. Sort Collection");
+        System.out.println("2. Search Game");
+        System.out.println("3. Add Game");
+        System.out.println("4. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    private static void sortCollection(ArrayList<String> collection) {
+        // Implement bubble sort
+        for (int i = 0; i < collection.size() - 1; i++) {
+            for (int j = 0; j < collection.size() - i - 1; j++) {
+                if (collection.get(j).compareToIgnoreCase(collection.get(j + 1)) > 0) {
+                    // Swap elements
+                    String temp = collection.get(j);
+                    collection.set(j, collection.get(j + 1));
+                    collection.set(j + 1, temp);
+                }
+            }
+        }
+        System.out.println("\nCollection sorted successfully!");
+    }
+
+    private static void searchGame(ArrayList<String> collection) {
+        System.out.print("Enter the title of the game to search: ");
+        String title = scanner.nextLine();
+
+        // Implement binary search
+        int low = 0;
+        int high = collection.size() - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int comparison = collection.get(mid).compareToIgnoreCase(title);
+            if (comparison == 0) {
+                System.out.println("Game found in the collection!");
+                return;
+            } else if (comparison < 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+        System.out.println("Game not found in the collection.");
+    }
+
+    private static void addGame(ArrayList<String> collection) {
+        System.out.print("Enter the title of the game to add: ");
+        String title = scanner.nextLine();
+        collection.add(title);
+        System.out.println("Game added to the collection!");
+    }
+
+    private static void loadFromCSV(ArrayList<String> collection, String filename) {
+        // Simulate loading from CSV file
+        Random rand = new Random();
+        for (int i = 0; i < 10; i++) {
+            collection.add("Game" + (i + 1));
+        }
+    }
+
+    private static void saveToCSV(ArrayList<String> collection, String filename) {
+        // Simulate saving to CSV file
+        System.out.println("Collection saved to " + filename);
+    }
+}
