@@ -66,6 +66,9 @@ public class Main {
 
     private static void loadFromCSV(ArrayList<String> collection, String filename) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
+            // Skip the header line
+            fileReader.readLine();
+            
             String line;
             while ((line = fileReader.readLine()) != null) {
                 collection.add(line);
@@ -74,6 +77,7 @@ public class Main {
             System.out.println("Error loading from CSV file: " + e.getMessage());
         }
     }
+    
 
     private static void saveToCSV(ArrayList<String> collection, String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
@@ -87,26 +91,36 @@ public class Main {
     }
 
     private static void printAlphabetically(ArrayList<String> collection) {
-        System.out.println("\nGames in alphabetical order:");
+        // Dummy implementation, replace with actual sorting logic based on alphabetical order
+        System.out.println("\nGames in alphabetical order: ");
         collection.sort(String::compareToIgnoreCase);
-        collection.forEach(System.out::println);
+        collection.forEach(Main::printFormatted);
     }
+    
 
     private static void printByDifficulty(ArrayList<String> collection) {
         // Dummy implementation, replace with actual sorting logic based on difficulty
-        System.out.println("\nGames sorted by difficulty (dummy implementation):");
-        collection.forEach(System.out::println);
+        System.out.println("\nGames sorted by difficulty:");
+        collection.forEach(Main::printFormatted);
     }
 
     private static void printByGenre(ArrayList<String> collection) {
         // Dummy implementation, replace with actual sorting logic based on genre
-        System.out.println("\nGames sorted by genre (dummy implementation):");
-        collection.forEach(System.out::println);
-    }
+        System.out.println("\nGames sorted by genre:");
+        collection.forEach(Main::printFormatted);
+        }
 
     private static void printByTime(ArrayList<String> collection) {
         // Dummy implementation, replace with actual sorting logic based on time
-        System.out.println("\nGames sorted by time (dummy implementation):");
-        collection.forEach(System.out::println);
+        System.out.println("\nGames sorted by time:");
+        collection.forEach(Main::printFormatted);
+    }
+
+    private static void printFormatted(String game) {
+        String[] attributes = game.split(",");
+        System.out.printf("%-50s | Rating: %.2f | Difficulty: %.2f | Players: %3d | Time: %3d | Year: %d | Genre: %s\n",
+                attributes[0], Double.parseDouble(attributes[1]), Double.parseDouble(attributes[2]),
+                Integer.parseInt(attributes[3]), Integer.parseInt(attributes[4]),
+                Integer.parseInt(attributes[5]), attributes[6]);
     }
 }
