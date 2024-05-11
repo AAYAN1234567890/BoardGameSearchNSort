@@ -58,11 +58,29 @@ public class Main {
     }
 
     private static void addGame(ArrayList<String> collection) {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the title of the game to add: ");
         String title = scanner.nextLine();
-        collection.add(title);
+        System.out.print("Enter the rating of the game: ");
+        double rating = scanner.nextDouble();
+        System.out.print("Enter the difficulty of the game: ");
+        double difficulty = scanner.nextDouble();
+        System.out.print("Enter the number of players: ");
+        int players = scanner.nextInt();
+        System.out.print("Enter the time to play (in minutes): ");
+        int time = scanner.nextInt();
+        System.out.print("Enter the year of release: ");
+        int year = scanner.nextInt();
+        scanner.nextLine(); // Consume newline character
+        System.out.print("Enter the genre of the game: ");
+        String genre = scanner.nextLine();
+    
+        String newGame = String.format("%s,%.5f,%.5f,%d,%d,%d,%s",
+                title, rating, difficulty, players, time, year, genre);
+        collection.add(newGame);
         System.out.println("Game added to the collection!");
     }
+    
 
     private static void loadFromCSV(ArrayList<String> collection, String filename) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
@@ -91,36 +109,124 @@ public class Main {
     }
 
     private static void printAlphabetically(ArrayList<String> collection) {
-        // Dummy implementation, replace with actual sorting logic based on alphabetical order
+        // Implement alphabetical sorting
+        for (int i = 1; i < collection.size(); i++) {
+            String key = collection.get(i);
+            int j = i - 1;
+            while (j >= 0 && collection.get(j).compareToIgnoreCase(key) > 0) {
+                collection.set(j + 1, collection.get(j));
+                j--;
+            }
+            collection.set(j + 1, key);
+        }
+    
+        // Display the sorted games
         System.out.println("\nGames in alphabetical order: ");
-        collection.sort(String::compareToIgnoreCase);
+        wait(2);
         collection.forEach(Main::printFormatted);
     }
     
+    
 
     private static void printByDifficulty(ArrayList<String> collection) {
-        // Dummy implementation, replace with actual sorting logic based on difficulty
+        // Implement sorting by difficulty using bubble sort
+        for (int i = 0; i < collection.size() - 1; i++) {
+            boolean swapped = false;
+            for (int j = 0; j < collection.size() - i - 1; j++) {
+                if (getAttribute(collection.get(j), 2) > getAttribute(collection.get(j + 1), 2)) {
+                    // Swap the games
+                    String temp = collection.get(j);
+                    collection.set(j, collection.get(j + 1));
+                    collection.set(j + 1, temp);
+                    swapped = true;
+                }
+            }
+            // If no two elements were swapped in the inner loop, then the array is already sorted
+            if (!swapped) {
+                break;
+            }
+        }
+    
+        // Display the sorted games
         System.out.println("\nGames sorted by difficulty:");
+        wait(2);
         collection.forEach(Main::printFormatted);
     }
 
     private static void printByGenre(ArrayList<String> collection) {
-        // Dummy implementation, replace with actual sorting logic based on genre
-        System.out.println("\nGames sorted by genre:");
-        collection.forEach(Main::printFormatted);
+        // Bubble sort implementation for sorting games by genre
+        int n = collection.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                String[] game1 = collection.get(j).split(",");
+                String[] game2 = collection.get(j + 1).split(",");
+                if (game1.length > 6 && game2.length > 6) {
+                    if (game1[6].compareToIgnoreCase(game2[6]) > 0) {
+                        // Swap elements
+                        String temp = collection.get(j);
+                        collection.set(j, collection.get(j + 1));
+                        collection.set(j + 1, temp);
+                    }
+                }
+            }
         }
-
-    private static void printByTime(ArrayList<String> collection) {
-        // Dummy implementation, replace with actual sorting logic based on time
-        System.out.println("\nGames sorted by time:");
+    
+        // Display the sorted games by genre
+        System.out.println("\nGames sorted by genre:");
+        wait(2);
         collection.forEach(Main::printFormatted);
     }
+    
+    
+
+        private static void printByTime(ArrayList<String> collection) {
+            // Implement bubble sort based on time attribute
+            for (int i = 0; i < collection.size() - 1; i++) {
+                for (int j = 0; j < collection.size() - i - 1; j++) {
+                    double time1 = getAttribute(collection.get(j), 4);
+                    double time2 = getAttribute(collection.get(j + 1), 4);
+                    if (time1 > time2) {
+                        // Swap elements
+                        String temp = collection.get(j);
+                        collection.set(j, collection.get(j + 1));
+                        collection.set(j + 1, temp);
+                    }
+                }
+            }
+        
+            // Display the sorted games
+            System.out.println("\nGames sorted by time:");
+            wait(2);
+            collection.forEach(Main::printFormatted);
+        }
+        
 
     private static void printFormatted(String game) {
         String[] attributes = game.split(",");
-        System.out.printf("%-50s | Rating: %.2f | Difficulty: %.2f | Players: %3d | Time: %3d | Year: %d | Genre: %s\n",
-                attributes[0], Double.parseDouble(attributes[1]), Double.parseDouble(attributes[2]),
-                Integer.parseInt(attributes[3]), Integer.parseInt(attributes[4]),
-                Integer.parseInt(attributes[5]), attributes[6]);
+        if (attributes.length >= 7) {
+            System.out.printf("%-50s | Rating: %.2f | Difficulty: %.2f | Players: %3d | Time: %4d | Year: %d | Genre: %s\n",
+                    attributes[0], Double.parseDouble(attributes[1]), Double.parseDouble(attributes[2]),
+                    Integer.parseInt(attributes[3]), Integer.parseInt(attributes[4]),
+                    Integer.parseInt(attributes[5]), attributes[6]);
+        } else {
+            //System.out.println("Invalid data format for game(s): " + game);
+        }
     }
+
+    private static double getAttribute(String game, int index) {
+        String[] attributes = game.split(",");
+        if (attributes.length <= index) {
+            return Double.MAX_VALUE; // Return a large value for out of bounds index
+        }
+        return Double.parseDouble(attributes[index]);
+    }
+
+    private static void wait(int sec) { //brought this over from our old CS Project (Text-Based RPG)
+        try {
+        Thread.sleep(sec * 1000);
+        } catch (InterruptedException e) {
+        e.printStackTrace();
+        }
+        }
+    
 }
