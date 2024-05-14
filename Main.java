@@ -1,3 +1,9 @@
+/*
+ * Title: Board Game Search N Sort
+ * Author: Aayan Samdani
+ * Date: May 14, 2024
+ */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -108,45 +114,38 @@ public class Main {
         }
     }
 
-    private static void printAlphabetically(ArrayList<String> collection) {
-        // Implement alphabetical sorting
-        for (int i = 1; i < collection.size(); i++) {
-            String key = collection.get(i);
-            int j = i - 1;
-            while (j >= 0 && collection.get(j).compareToIgnoreCase(key) > 0) {
-                collection.set(j + 1, collection.get(j));
-                j--;
-            }
-            collection.set(j + 1, key);
-        }
-    
-        // Display the sorted games
-        System.out.println("\nGames in alphabetical order: ");
-        wait(2);
-        collection.forEach(Main::printFormatted);
-    }
-    
-    
-
-    private static void printByDifficulty(ArrayList<String> collection) {
-        // Implement sorting by difficulty using bubble sort
-        for (int i = 0; i < collection.size() - 1; i++) {
-            boolean swapped = false;
-            for (int j = 0; j < collection.size() - i - 1; j++) {
-                if (getAttribute(collection.get(j), 2) > getAttribute(collection.get(j + 1), 2)) {
-                    // Swap the games
+    private static void bubbleSort(ArrayList<String> collection, int attributeIndex) {
+        int n = collection.size();
+        boolean swapped;
+        do {
+            swapped = false;
+            for (int j = 0; j < n - 1; j++) {
+                if (getAttribute(collection.get(j), attributeIndex) > getAttribute(collection.get(j + 1), attributeIndex)) {
+                    // Swap elements
                     String temp = collection.get(j);
                     collection.set(j, collection.get(j + 1));
                     collection.set(j + 1, temp);
                     swapped = true;
                 }
             }
-            // If no two elements were swapped in the inner loop, then the array is already sorted
-            if (!swapped) {
-                break;
-            }
-        }
-    
+            n--;
+        } while (swapped);
+    }
+
+    private static void printAlphabetically(ArrayList<String> collection) {
+        // Implement alphabetical sorting
+        bubbleSort(collection, 0);
+        
+        // Display the sorted games
+        System.out.println("\nGames in alphabetical order: ");
+        wait(2);
+        collection.forEach(Main::printFormatted);
+    }
+
+    private static void printByDifficulty(ArrayList<String> collection) {
+        // Implement sorting by difficulty
+        bubbleSort(collection, 2);
+
         // Display the sorted games
         System.out.println("\nGames sorted by difficulty:");
         wait(2);
@@ -154,51 +153,24 @@ public class Main {
     }
 
     private static void printByGenre(ArrayList<String> collection) {
-        // Bubble sort implementation for sorting games by genre
-        int n = collection.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                String[] game1 = collection.get(j).split(",");
-                String[] game2 = collection.get(j + 1).split(",");
-                if (game1.length > 6 && game2.length > 6) {
-                    if (game1[6].compareToIgnoreCase(game2[6]) > 0) {
-                        // Swap elements
-                        String temp = collection.get(j);
-                        collection.set(j, collection.get(j + 1));
-                        collection.set(j + 1, temp);
-                    }
-                }
-            }
-        }
-    
-        // Display the sorted games by genre
+        // Implement sorting by genre
+        bubbleSort(collection, 6);
+
+        // Display the sorted games
         System.out.println("\nGames sorted by genre:");
         wait(2);
         collection.forEach(Main::printFormatted);
     }
-    
-    
 
-        private static void printByTime(ArrayList<String> collection) {
-            // Implement bubble sort based on time attribute
-            for (int i = 0; i < collection.size() - 1; i++) {
-                for (int j = 0; j < collection.size() - i - 1; j++) {
-                    double time1 = getAttribute(collection.get(j), 4);
-                    double time2 = getAttribute(collection.get(j + 1), 4);
-                    if (time1 > time2) {
-                        // Swap elements
-                        String temp = collection.get(j);
-                        collection.set(j, collection.get(j + 1));
-                        collection.set(j + 1, temp);
-                    }
-                }
-            }
-        
-            // Display the sorted games
-            System.out.println("\nGames sorted by time:");
-            wait(2);
-            collection.forEach(Main::printFormatted);
-        }
+    private static void printByTime(ArrayList<String> collection) {
+        // Implement sorting by time
+        bubbleSort(collection, 4);
+
+        // Display the sorted games
+        System.out.println("\nGames sorted by time:");
+        wait(2);
+        collection.forEach(Main::printFormatted);
+    }
         
 
     private static void printFormatted(String game) {
@@ -228,5 +200,5 @@ public class Main {
         e.printStackTrace();
         }
         }
-    
+
 }
