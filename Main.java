@@ -122,7 +122,7 @@ private static void displayMenu() {
     System.out.println("3. Print games based on difficulty");
     System.out.println("4. Print games based on genre");
     System.out.println("5. Print games based on time");
-    System.out.println("6. Search based on man players");
+    System.out.println("6. Search based on max players");
     System.out.println("7. Save and exit");
     System.out.print("Enter your choice: ");
 }
